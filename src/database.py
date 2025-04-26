@@ -8,7 +8,7 @@ import datetime
 from typing import List, Tuple, Optional
 import logging
 
-from .config import DATABASE_PATH
+from config import DATABASE_PATH
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

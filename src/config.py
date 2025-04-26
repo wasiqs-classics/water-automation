@@ -1,77 +1,73 @@
+# src/config.py
 """
-Confirguration constants for the Water Pump Automation System
+Configuration constants for the Water Pump Automation System.
 """
-
 import os
 from datetime import time
 
-# Defining Database path for later use
+# --- Database ---
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
-DATABASE_PATH = os.path.join(DATA_DIR,'automation_logs.db')
+DATABASE_PATH = os.path.join(DATA_DIR, 'automation_logs.db')
 
-# Ensure that the data directory exists
+# Ensure data directory exists
 os.makedirs(DATA_DIR, exist_ok=True)
 
-# Defining constants
-
-# TANK CAPACITIES in Liters
+# --- Tank Capacities (in Liters, example values) ---
 MAIN_LINE_TANK_CAPACITY = 1000
 UNDERGROUND_TANK_CAPACITY = 5000
 OVERHEAD_TANK_CAPACITY = 2000
 
-# PUMPS OPERATIONAL THRESHOLDS (in percentages)
+# --- Water Level Thresholds (as percentages) ---
+# P1 Operation
+P1_START_THRESHOLD_UNDERGROUND = 10.0  # Start P1 if Underground < 10%
+P1_STOP_THRESHOLD_MAIN_LINE = 15.0     # Stop P1 if Main Line < 15%
+P1_REQ_MAIN_LINE_LEVEL = 15.0          # P1 requires Main Line >= 15% to start
+P1_MANUAL_BYPASS_MIN_UNDERGROUND = 5.0 # Allow bypass if Underground < 5%
+P1_MANUAL_BYPASS_MIN_MAIN_LINE = 5.0   # Disallow bypass if Main Line < 5%
 
-# for PUMP P1
-P1_START_THRESHOLD_UNDERGROUND = 10.0 #Start the P1 pump if underground level is < 10%
-P1_STOP_THRESHOLD_MAIN_LINE = 15.0 # Stop P1 if Main Line Levvel is < 15%
-P1_REQ_MAIN_LINE_LEVEL = 15.0 # P1 requires main line level to be at least 15% or more. 
-P1_MANUAL_BYPASS_MIN_UNDERGOUND = 5.0 # Allow bypass if Underground level is < 5%
-P1_MANUAL_BYPASS_MIN_MAIN_LINE = 5.0 # Allow bypass if Main Line level is < 5%
+# P2 Operation
+P2_START_THRESHOLD_MAIN_LINE = 5.0     # Condition to consider P2: Main Line < 5%
+P2_START_THRESHOLD_UNDERGROUND = 5.0   # Condition to start P2: Underground < 5%
+P2_START_THRESHOLD_OVERHEAD = 5.0      # Condition to start P2: Overhead < 5%
+P2_STOP_THRESHOLD_UNDERGROUND = 30.0   # Stop P2 when Underground reaches >= 30%
 
-# For PUMP P2
-P2_START_THRESHOLD_MAIN_LINE = 5.0 # Condition to consider P2: Main line < 5%
-P2_START_THRESHOLD_UNDERGROUND = 5.0 # Condition to consider P2: Underground tank < 5%
-P2_START_THRESHOLD_OVERHEAD = 5.0 # Condition to consider P2: Overhead tank < 5%
-P2_STOP_THRESHOLD_UNDERGROUND = 30.0 # Stop P2 if underground level is > 10%
+# P3 Operation
+P3_START_THRESHOLD_OVERHEAD = 10.0     # Start P3 if Overhead < 10%
+P3_REQ_UNDERGROUND_LEVEL = 10.0        # P3 requires Underground >= 10% to start
+P3_SIGNAL_PUMP_THRESHOLD_UNDERGROUND = 10.0 # If Underground < 10%, signal P1/P2
+P3_SIGNAL_TARGET_UNDERGROUND = 30.0    # Target level for P1/P2 when signaled by P3
+P3_WARN_THRESHOLD_OVERHEAD = 5.0       # Warning if Overhead < 5%
+P3_WARN_THRESHOLD_UNDERGROUND_LOW = 5.0  # Warning if Underground < 5%
+P3_WARN_THRESHOLD_UNDERGROUND_HIGH = 10.0 # Warning if Underground between 5% and 10%
+P3_STOP_THRESHOLD_UNDERGROUND = 5.0    # Stop P3 if Underground < 5%
 
-
-# For PUMP P3
-P3_START_THRESHOLD_OVERHEAD = 10.0 # Start P3 if Overhead < 10%
-P3_REQ_UNDERGROUND_LEVEL = 10.0 #P3 requires underground level to be at least 10% or more.
-P3_SIGNAL_PUMP_THRESHOLD_UNDERGROUND = 10.0 # If underground level is < 10% then signal either P1 or P2 to start pumping water to the underground tank.
-P3_SIGNAL_TARGET_UNDERGROUND = 30.0 # Target level to stop P1/P2 when signaled by P3
-P3_WARN_THRESHOLD_OVERHEAD = 5.0 # Warning if overhead is < 5%
-P3_WARN_THRESHOLD_UNDERGROUND_LOW = 5.0 # lower limit for warning
-P3_WARN_THRESHOLD_UNDERGROUND_HIGH = 10.0 # upper limit for warning
-P3_STOP_THRESHOLD_UNDERGROUND= 5.0 # Stop P3 if underground level is < 5%
-
-# Pump & Water Flow Rates (liters per second!)
+# --- Pump Flow Rates (Liters per second, for simulation) ---
 P1_FLOW_RATE = 10.0
 P2_FLOW_RATE = 8.0
 P3_FLOW_RATE = 12.0
-HOUSEHOLD_CONSUMPTION_RATE = 1.0 # Water consumption from overhead tank per second.
+HOUSEHOLD_CONSUMPTION_RATE = 1.0 # Water consumed from Overhead Tank per second
 
-# CITY WATER SUPPLY SCHEDULE
-CITY_SUPPLY_START_HOUR = 10 # 10 AM
-CITY_SUPPLY_END_HOUR = 15 # 3 PM
-CITY_SUPPLY_FLOW_RATE = 15.0 # This is the flow rate of city water supply in liters per second.
+# --- City Water Supply Timing ---
+CITY_SUPPLY_START_HOUR = 10
+CITY_SUPPLY_END_HOUR = 15
+CITY_SUPPLY_FLOW_RATE = 15.0 # Liters per second when supply is on
 
-# PEAK ELECTRICITY HOURS CALCULATION
+# --- Peak Electricity Hours ---
 PEAK_HOUR_START = time(18, 30) # 6:30 PM
-PEAH_HOUR_END = time(22, 30) # 10:30 PM
+PEAK_HOUR_END = time(22, 30)   # 10:30 PM
 
-# ELECTRICITY METER SCHEDULE
-GROUND_FLOOR_METER_DAYS = range(1,16) # 1st to 15th of the month
+# --- Electricity Meter Schedule ---
+GROUND_FLOOR_METER_DAYS = range(1, 16) # 1st to 15th
 
-# SIMULATION SETTINGS
-SIMULATION_INTERVAL_SECONDS = 1 # How often the simulation state updates in real time in seconds.
-STATE_UPDATE_INTERVAL = 5 # How often Streamlit App refresh
+# --- Simulation Settings ---
+SIMULATION_INTERVAL_SECONDS = 1 # How often the simulation state updates in real-time seconds
+STATE_UPDATE_INTERVAL = 1 # How often the Streamlit app refreshes in seconds
 
-# FOR LOGGING
-LOG_LEVEL = 'INFO' # Set the logging level to INFO, DEBUG, WARNING, ERROR, CRITICAL
+# --- Logging ---
+LOG_LEVEL = "INFO"
 
-# GUI SETTINGS
-
+# --- GUI ---
 APP_TITLE = "Water Pump Automation System"
 
-print(f"DATABASE will be stored at {DATABASE_PATH}")
+print(f"Database will be stored at: {DATABASE_PATH}")
+
